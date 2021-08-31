@@ -35,14 +35,15 @@ module.exports =
 
             if (!user) return Builder.errors.noUserFound(subtag, context);
 
-            let state = await CommandManager.built['kick'].kick(
+            let response = await CommandManager.built['kick'].kick(
                 context.msg,
                 user,
                 args[1] || context.scope.reason || undefined,
                 true,
                 noPerms
             );
-            console.debug(state);
+    
+            /*console.debug(state);
             switch (state) {
                 case 0: //Successful
                     return 'Success';
@@ -56,7 +57,12 @@ module.exports =
                     return error(`You don't have permission to kick ${user.username}!`);
                 default: //Error occurred
                     throw state;
-            }
+            }*/
+    
+            if (typeof response[1] == 'string' && response[1].startsWith('`'))
+                return Builder.util.error(subtag, context, response[1]);
+    
+            return response[1];
         })
         .whenDefault(Builder.errors.tooManyArguments)
         .build();
